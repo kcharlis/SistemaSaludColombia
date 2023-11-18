@@ -4,8 +4,8 @@ import os
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from urllib.parse import unquote
-from sqlalchemy.sql import text
 import logging
+
 
 
 
@@ -369,6 +369,125 @@ def eliminar_paciente(paciente_id):
         flash('Error al eliminar el paciente: {}'.format(str(e)), 'danger')
 
     return redirect(url_for('get_pacientes'))
+
+# Agrega la función obtener_inventarios
+def obtener_inventarios():
+    cursor = db.cursor()
+
+    # Consulta para obtener la lista de inventarios de medicamentos
+    query_inventarios = """
+        SELECT 
+            inventarios_medicamentos.ID_Inventario,
+            medicamentos.Nombre AS Nombre_Medicamento,
+            eps.Nombre AS Nombre_EPS,
+            inventarios_medicamentos.Stock_Actual,
+            inventarios_medicamentos.Fecha_Actualizacion
+        FROM inventarios_medicamentos
+        JOIN medicamentos ON inventarios_medicamentos.ID_Medicamento = medicamentos.ID_Medicamento
+        JOIN eps ON inventarios_medicamentos.ID_EPS = eps.ID_EPS;
+    """
+    cursor.execute(query_inventarios)
+
+    # Convertir las tuplas a diccionarios
+    columns = [col[0] for col in cursor.description]
+    inventarios = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    return inventarios
+
+# Agrega la nueva función obtener_medicamentos
+def obtener_medicamentos():
+    cursor = db.cursor()
+
+    # Consulta para obtener la lista de medicamentos
+    query_medicamentos = """
+        SELECT ID_Medicamento, Nombre FROM medicamentos;
+    """
+    cursor.execute(query_medicamentos)
+
+    # Convertir las tuplas a diccionarios
+    columns = [col[0] for col in cursor.description]
+    medicamentos = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    return medicamentos
+
+# Ruta para manejar el inventario de medicamentos
+@app.route("/inventarios_medicamentos", methods=["GET", "POST"])
+def inventarios_medicamentos():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    cursor = db.cursor()
+
+    # Agrega la función obtener_inventarios
+    def obtener_inventarios():
+        cursor = db.cursor()
+
+        # Consulta para obtener la lista de inventarios de medicamentos
+        query_inventarios = """
+            SELECT 
+                inventarios_medicamentos.ID_Inventario,
+                medicamentos.Nombre AS Nombre_Medicamento,
+                eps.Nombre AS Nombre_EPS,
+                inventarios_medicamentos.Stock_Actual,
+                inventarios_medicamentos.Fecha_Actualizacion
+            FROM inventarios_medicamentos
+            JOIN medicamentos ON inventarios_medicamentos.ID_Medicamento = medicamentos.ID_Medicamento
+            JOIN eps ON inventarios_medicamentos.ID_EPS = eps.ID_EPS;
+        """
+        cursor.execute(query_inventarios)
+
+        # Convertir las tuplas a diccionarios
+        columns = [col[0] for col in cursor.description]
+        inventarios = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+        return inventarios
+
+    # Agrega la función obtener_eps
+    def obtener_eps():
+        cursor = db.cursor()
+
+        # Consulta para obtener la lista de EPS
+        query_eps = """
+            SELECT ID_EPS, Nombre FROM eps;
+        """
+        cursor.execute(query_eps)
+
+        # Convertir las tuplas a diccionarios
+        columns = [col[0] for col in cursor.description]
+        eps_list = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+        return eps_list
+
+    if request.method == "GET":
+        inventarios = obtener_inventarios()
+        medicamentos = obtener_medicamentos()
+        eps_list = obtener_eps()
+        return render_template('inventarios_medicamentos.html', inventarios=inventarios, medicamentos=medicamentos, eps_list=eps_list)
+
+    if request.method == "POST":
+        id_medicamento = request.form.get("id_medicamento")
+        id_eps = request.form.get("id_eps")
+        stock_actual = request.form.get("stock_actual")
+        fecha_actualizacion = request.form.get("fecha_actualizacion")
+
+        # Agrega la función para insertar inventario
+        def insertar_inventario(id_medicamento, id_eps, stock_actual, fecha_actualizacion):
+            cursor = db.cursor()
+
+            query_insert_inventario = """
+                INSERT INTO inventarios_medicamentos (ID_Medicamento, ID_EPS, Stock_Actual, Fecha_Actualizacion)
+                VALUES (%s, %s, %s, %s);
+            """
+            cursor.execute(query_insert_inventario, (id_medicamento, id_eps, stock_actual, fecha_actualizacion))
+            db.commit()
+
+        insertar_inventario(id_medicamento, id_eps, stock_actual, fecha_actualizacion)
+        flash('Inventario registrado exitosamente', 'success')
+        return redirect(url_for('inventarios_medicamentos'))
+
+    return render_template('inventarios_medicamentos.html')
+
 
 
 if __name__ == "__main__":

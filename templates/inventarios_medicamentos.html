@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Inventario de Medicamentos</h2>
+
+    <!-- Formulario para agregar inventario -->
+    <form action="{{ url_for('inventarios_medicamentos') }}" method="post" class="mi-formulario">
+        <label for="id_medicamento">Nombre Medicamento:</label>
+        <select name="id_medicamento" required>
+            {% for medicamento in medicamentos %}
+                <option value="{{ medicamento.ID_Medicamento }}">{{ medicamento.Nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="id_eps">Nombre EPS:</label>
+        <select name="id_eps" required>
+            {% for eps in eps_list %}
+                <option value="{{ eps.ID_EPS }}">{{ eps.Nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="stock_actual">Stock Actual:</label>
+        <input type="text" name="stock_actual" required>
+
+        <label for="fecha_actualizacion">Fecha Actualización:</label>
+        <input type="date" name="fecha_actualizacion" required>
+
+        <button type="submit" class="btn btn-primary">Agregar Inventario</button>
+    </form>
+
+    <!-- Mostrar inventarios existentes -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID Inventario</th>
+                <th>Nombre Medicamento</th>
+                <th>Nombre EPS</th>
+                <th>Stock Actual</th>
+                <th>Fecha Actualización</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inventario in inventarios %}
+                <tr>
+                    <td>{{ inventario.ID_Inventario }}</td>
+                    <td>{{ inventario.Nombre_Medicamento }}</td>
+                    <td>{{ inventario.Nombre_EPS }}</td>
+                    <td>{{ inventario.Stock_Actual }}</td>
+                    <td>{{ inventario.Fecha_Actualizacion }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

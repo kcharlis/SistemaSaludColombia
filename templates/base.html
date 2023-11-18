@@ -30,6 +30,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('get_pacientes') }}">Buscar Paciente</a>
                 </li>
+
+                 <!-- Agrega el siguiente bloque para el enlace a inventarios_medicamentos -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('inventarios_medicamentos') }}">Inventarios Medicamentos</a>
+                </li>
+
                 {% if 'user_id' in session %}
                     <li class="nav-item">
                         <a class="nav-link" href="#">Hola, {{ session['user_name'] }}</a>
