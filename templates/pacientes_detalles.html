@@ -1,52 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <title>Detalles de Pacientes</title>
-</head>
-<body>
-  <div class="container">
-    <h1>Detalles de Pacientes</h1>
-    <!-- Agregar formulario de búsqueda por ID del paciente -->
-    <form action="{{ url_for('buscar_paciente_por_id') }}" method="get">
-      <label for="idPaciente">Buscar por ID del Paciente:</label>
-      <input type="text" id="idPaciente" name="idPaciente" required>
-      <button type="submit">Buscar</button>
-    </form>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Documento de Identidad</th>
-        <th>Fecha de Nacimiento</th>
-        <th>Dirección</th>
-        <th>Contacto</th>
-        <th>Fecha de Consulta</th>
-        <th>Diagnóstico</th>
-        <th>Tratamiento</th>
-        <th>Resultados de Exámenes</th>
-        <th>EPS</th>
-      </tr>
-      {% for paciente in pacientes_detalles %}
-        <tr>
-          <td>{{ paciente[0] }}</td>
-          <td>{{ paciente[1] }}</td>
-          <td>{{ paciente[2] }}</td>
-          <td>{{ paciente[3] }}</td>
-          <td>{{ paciente[4] }}</td>
-          <td>{{ paciente[5] }}</td>
-          <td>{{ paciente[6] }}</td>
-          <td>{{ paciente[7] }}</td>
-          <td>{{ paciente[8] }}</td>
-          <td>{{ paciente[9] }}</td>
-          <td>{{ paciente[10] }}</td>
-          <td>{{ paciente[11] }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-  </div>
-</body>
-</html>
+<!-- Nombre del archivo: pacientes_detalles.html -->
+{% extends 'base.html' %}
+
+{% block title %}Detalles de Pacientes{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="mt-4 mb-4">Detalles de Pacientes</h2>
+        
+        <!-- Formulario para buscar por número de identificación -->
+        <form method="POST" action="{{ url_for('buscar_paciente') }}" class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Número de Identificación" name="documento_busqueda">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        {% if pacientes_detalles %}
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Documento de Identidad</th>
+                            <th>Fecha de Nacimiento</th>
+                            <th>Dirección</th>
+                            <th>Contacto</th>
+                            <th>Fecha de Consulta</th>
+                            <th>Diagnóstico</th>
+                            <th>Tratamiento</th>
+                            <th>Resultados de Exámenes</th>
+                            <th>EPS</th>
+                            <th>Historial Médico</th>
+                            <th>Cita</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in pacientes_detalles %}
+                            <tr>
+                                <td>{{ paciente.ID_Paciente }}</td>
+                                <td>{{ paciente.Nombre_Paciente }}</td>
+                                <td>{{ paciente.Apellido_Paciente }}</td>
+                                <td>{{ paciente.Documento_Identidad }}</td>
+                                <td>{{ paciente.Fecha_Nacimiento }}</td>
+                                <td>{{ paciente.Direccion }}</td>
+                                <td>{{ paciente.Contacto }}</td>
+                                <td>{{ paciente.Fecha_Consulta }}</td>
+                                <td>{{ paciente.Diagnostico }}</td>
+                                <td>{{ paciente.Tratamiento }}</td>
+                                <td>{{ paciente.Resultados_Examenes }}</td>
+                                <td>{{ paciente.Nombre_EPS }}</td>
+                                <td>
+                                    {% if paciente.Historial_Medico %}
+                                        <a href="{{ url_for('historial_medico', paciente_id=paciente.ID_Paciente) }}" target="_blank">Ver historial médico</a>
+                                    {% else %}
+                                        Sin historial médico
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if paciente.Fecha_Cita %}
+                                        {{ paciente.Fecha_Cita }}
+                                    {% else %}
+                                        Sin cita
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="{% if paciente and 'ID_Paciente' in paciente %}{{ url_for('eliminar_paciente', paciente_id=paciente.ID_Paciente) }}{% endif %}">
+                                        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar a este paciente?')">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No hay pacientes registrados.</p>
+        {% endif %}
+    </div>
+{% endblock %}

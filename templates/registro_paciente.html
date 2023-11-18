@@ -1,0 +1,85 @@
+<!-- Nombre del archivo: registro_paciente.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static', filename='formulario.css') }}">
+  <title>Registro de Paciente</title>
+</head>
+<body>
+  {% extends 'base.html' %}
+
+{% block title %}Registro de Paciente{% endblock %}
+
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  <div class="container">
+    <h1>Registro de Paciente</h1>
+    <!-- Formulario de registro -->
+    <form action="{{ url_for('registrar_paciente') }}" method="post" class="mi-formulario" enctype="multipart/form-data">
+      <label for="nombre">Nombres:</label>
+      <input type="text" id="nombre" name="nombre" required>
+      
+      <label for="apellido">Apellidos:</label>
+      <input type="text" id="apellido" name="apellido" required>
+      
+      <label for="documento">Documento de Identidad:</label>
+      <input type="text" id="documento" name="documento" required>
+      
+      <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+      <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+      
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion" name="direccion" required>
+      
+      <label for="contacto">Contacto:</label>
+      <input type="text" id="contacto" name="contacto" required>
+      
+      <label for="historial_medico">Historial Médico (PDF):</label>
+      <input type="file" id="historial_medico" name="historial_medico" accept=".pdf" required>
+      
+      <label for="fecha_consulta">Fecha de Consulta:</label>
+      <input type="date" id="fecha_consulta" name="fecha_consulta" required>
+
+      <label for="diagnostico">Diagnóstico:</label>
+      <textarea id="Diagnostico" name="Diagnostico" rows="4"></textarea>
+
+      <label for="tratamiento">Tratamiento:</label>
+      <textarea id="tratamiento" name="tratamiento" rows="4"></textarea>
+
+      <label for="resultados_examenes">Resultados de Exámenes:</label>
+      <textarea id="resultados_examenes" name="resultados_examenes" rows="4"></textarea>
+      <!-- Nueva línea para el bucle de opciones de EPS -->
+     
+      <label for="eps">EPS:</label>
+      <select id="eps" name="eps" class="visible-options" required>
+          {% for ep in eps %}
+              <option value="{{ ep[0] }}">{{ ep[1] }}</option>
+          {% endfor %}
+      </select>
+
+          
+      
+
+
+      <!-- Nueva línea para la fecha de la cita -->
+      <label for="fecha_cita">Fecha de Cita:</label>
+      <input type="date" id="fecha_cita" name="fecha_cita">
+
+      <button type="submit">Registrar</button>
+    </form>
+  </div>
+{% endblock %}
+</body>
+</html>
+

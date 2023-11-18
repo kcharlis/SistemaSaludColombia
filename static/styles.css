@@ -1,3 +1,7 @@
+/* Nombre del archivo: styles.css */
+
+/* Estilos generales del proyecto */
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
@@ -5,25 +9,107 @@ body {
   padding: 0;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+.container.mt-4 {
+  max-width: 800;
+  margin: 10px;
+  padding: 10px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 8px;
   text-align: left;
 }
 
 th {
   background-color: #4CAF50;
   color: white;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.flash-messages {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.flash-messages {
+  animation: fade 1.5s ease;
+}
+
+/* Estilos específicos del login */
+
+.login-body {
+  background-color: #28a745; /* Color verde */
+  color: #fff; /* Texto blanco */
+}
+
+.login-container {
+  background-color: #fff; /* Fondo blanco para el contenedor */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sutil sombra */
+  padding: 20px; /* Espaciado interno */
+  margin: 50px auto; /* Centrar en la página */
+  max-width: 400px; /* Ancho máximo del contenedor */
+  text-align: center; /* Alinea el contenido al centro */
+}
+
+.login-h1 {
+  text-align: center;
+  color: #000;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  color: #000; /* Color del texto del formulario */
+}
+
+.label-text {
+  margin-bottom: 8px;
+  color: #000; /* Color del texto de las etiquetas */
+}
+
+.input-field {
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #28a745; /* Borde verde */
+  border-radius: 4px; /* Bordes redondeados */
+  color: #000; /* Color del texto de los inputs */
+}
+
+.submit-button {
+  background-color: #28a745; /* Fondo verde */
+  color: #fff; /* Texto blanco */
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Efecto de transición */
+}
+
+.submit-button:hover {
+  background-color: #218838; /* Color verde oscuro al pasar el ratón */
+}
+
+.unad-image {
+  max-width: 100%; /* Ajusta la imagen al ancho del contenedor */
+  border-radius: 8px; /* Bordes redondeados para la imagen */
+  margin-top: 20px; /* Espaciado superior */
 }

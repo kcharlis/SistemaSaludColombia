@@ -1,0 +1,77 @@
+<!-- Nombre del archivo: resultado_busqueda.html -->
+{% extends 'base.html' %}
+
+{% block title %}Resultados de Búsqueda{% endblock %}
+
+{% block content %}
+    <h2>Resultados de Búsqueda</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        {% if resultados_busqueda %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Documento de Identidad</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Dirección</th>
+                        <th>Contacto</th>
+                        <th>Fecha de Consulta</th>
+                        <th>Diagnóstico</th>
+                        <th>Tratamiento</th>
+                        <th>Resultados de Exámenes</th>
+                        <th>EPS</th>
+                        <th>Historial Médico</th>
+                        <th>Fecha de Cita</th>  
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente_encontrado in resultados_busqueda %}
+                        <tr>
+                            <td>{{ paciente_encontrado['ID_Paciente'] }}</td>
+                            <td>{{ paciente_encontrado['Nombre_Paciente'] }}</td>
+                            <td>{{ paciente_encontrado['Apellido_Paciente'] }}</td>
+                            <td>{{ paciente_encontrado['Documento_Identidad'] }}</td>
+                            <td>{{ paciente_encontrado['Fecha_Nacimiento'] }}</td>
+                            <td>{{ paciente_encontrado['Direccion'] }}</td>
+                            <td>{{ paciente_encontrado['Contacto'] }}</td>
+                            <td>{{ paciente_encontrado['Fecha_Consulta'] }}</td>
+                            <td>{{ paciente_encontrado['Diagnostico'] }}</td>
+                            <td>{{ paciente_encontrado['Tratamiento'] }}</td>
+                            <td>{{ paciente_encontrado['Resultados_Examenes'] }}</td>
+                            <td>{{ paciente_encontrado['Nombre_EPS'] }}</td>
+                            <td>
+                                {% if paciente_encontrado['Historial_Medico'] %}
+                                    <a href="{{ url_for('historial_medico', paciente_id=paciente_encontrado['ID_Paciente']) }}" target="_blank">Ver historial médico</a>
+                                {% else %}
+                                    Sin historial médico
+                                {% endif %}
+                            </td>
+                            <td>{{ paciente_encontrado['Fecha_Cita'] }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('eliminar_paciente', paciente_id=paciente_encontrado['ID_Paciente']) }}">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar a este paciente?')">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No se encontraron pacientes con el ID proporcionado.</p>
+        {% endif %}
+    </div>
+{% endblock %}
