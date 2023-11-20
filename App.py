@@ -6,6 +6,13 @@ from flask import send_from_directory
 from urllib.parse import unquote
 import logging
 
+# módulos necesarios para /contactenos
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField
+from wtforms.validators import DataRequired, Email
+from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_mail import Mail, Message
+
 
 
 
@@ -13,7 +20,7 @@ import logging
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Cambia esto por una clave secreta más segura
+app.secret_key = 'your_secret_key'  
 app.logger.setLevel(logging.DEBUG)
 
 # Configuración de la conexión a la BD
@@ -35,7 +42,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 # Ruta para el inicio de sesión
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    error = None  # Definimos la variable error con un valor predeterminado
+    error = None  
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -53,7 +60,7 @@ def login():
         else:
             error = "Nombre de usuario o contraseña incorrectos."
 
-    # Asegurémonos de que 'error' esté definido incluso para solicitudes GET
+   
     return render_template('login.html', error=error)
 
 
@@ -67,8 +74,6 @@ def logout():
 
 # ...
 
-
-# ...
 
 # Ruta para obtener todos los pacientes con detalles de historias clínicas, EPS y citas
 @app.route("/pacientes", methods=["GET"])
@@ -121,7 +126,7 @@ def buscar_paciente():
     cursor = db.cursor()
 
     documento_busqueda = request.form.get('documento_busqueda')
-    print(f'Documento de búsqueda: {documento_busqueda}')  # Agrega esta línea
+    print(f'Documento de búsqueda: {documento_busqueda}')  
 
     # Consulta para buscar paciente por número de identificación
     query_busqueda = """
@@ -181,7 +186,7 @@ def registrar_paciente():
 
     if request.method == "GET":
         eps = obtener_eps()
-        print(eps)  # Agrega esta línea para imprimir las EPS en la consola
+        print(eps)  
         return render_template('registro_paciente.html', eps=eps)
 
     if request.method == "POST":
@@ -196,7 +201,7 @@ def registrar_paciente():
         Diagnostico = request.form.get("Diagnostico")
         tratamiento = request.form.get("tratamiento")
         resultados_examenes = request.form.get("resultados_examenes")
-        fecha_cita = request.form.get("fecha_cita")  # Agrega este campo
+        fecha_cita = request.form.get("fecha_cita")  
 
         # Validar que el archivo es un PDF
         if historial_medico and allowed_file(historial_medico.filename):
@@ -291,8 +296,7 @@ def format_paciente_details(paciente):
     # Imprimir algunos valores clave para depuración
     print("ID_Paciente:", paciente_detalles['ID_Paciente'])
     print("Nombre_Paciente:", paciente_detalles['Nombre_Paciente'])
-    # ... repite para otros campos ...
-
+    
     return paciente_detalles
 
 
@@ -321,7 +325,7 @@ def historial_medico(paciente_id):
 
     if resultado and resultado[0]:
         # El paciente tiene historial médico, redirigir a la ruta de descarga
-        filename = unquote(resultado[0])  # Decodificar caracteres especiales
+        filename = unquote(resultado[0])  
         return redirect(url_for('uploaded_file', filename=filename))
     else:
         # El paciente no tiene historial médico
@@ -487,6 +491,53 @@ def inventarios_medicamentos():
         return redirect(url_for('inventarios_medicamentos'))
 
     return render_template('inventarios_medicamentos.html')
+
+
+
+
+
+# Configuración para Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587  # Puerto de STARTTLS
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = 'kcharlis16@gmail.com'
+app.config['MAIL_PASSWORD'] = 'TuContraseña'
+
+mail = Mail(app)
+
+# formulario usando Flask-WTF
+class ContactForm(FlaskForm):
+    nombre = StringField('Nombre', validators=[DataRequired()])
+    correo = StringField('Correo electrónico', validators=[DataRequired(), Email()])
+    mensaje = TextAreaField('Mensaje', validators=[DataRequired()])
+
+# Ruta para la página de contacto
+@app.route("/contactanos", methods=["GET", "POST"])
+def contactanos():
+    form = ContactForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+        nombre = form.nombre.data
+        correo = form.correo.data
+        mensaje = form.mensaje.data
+
+        msg = Message('Nuevo mensaje de contacto',
+                      sender=correo,
+                      recipients=['kcharlis16@gmail.com'])
+
+        msg.body = f"Nombre: {nombre}\nCorreo: {correo}\n\nMensaje:\n{mensaje}"
+
+        try:
+            mail.send(msg)
+            flash('Mensaje enviado correctamente', 'success')
+        except Exception as e:
+            flash('Error al enviar el mensaje. Inténtalo de nuevo más tarde.', 'error')
+
+        return redirect(url_for('contactanos'))
+
+    return render_template('contactanos.html', form=form)
+
 
 
 

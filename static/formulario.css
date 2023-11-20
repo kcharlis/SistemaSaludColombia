@@ -1,12 +1,12 @@
 /*  Nombre del archivo: formulario.css */
 /* Estilos específicos para el formulario de registro */
 .mi-formulario {
-    background-color: #4CAF50; /* Color verde de tu proyecto */
+    background-color: #4CAF50; 
     padding: 20px;
     border-radius: 8px;
     color: white;
-    max-width: 400px; /* Ajusta el ancho máximo según tus necesidades */
-    margin: 0 auto; /* Centrar el formulario en la página */
+    max-width: 400px; 
+    margin: 0 auto; 
   }
   
   .mi-formulario label {
@@ -34,12 +34,11 @@
   }
   
 
-/* Agrega estas líneas para ajustar el ancho del select y las opciones */
 .visible-options {
-  color: black; /* o el color que desees */
-  width: 100%; /* Ancho completo del contenedor */
+  color: black; 
+  width: 100%; 
 }
 
 .visible-options option {
-  width: 100%; /* Ancho completo del contenedor de opciones */
+  width: 100%; 
 }

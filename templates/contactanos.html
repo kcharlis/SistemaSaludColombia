@@ -1,0 +1,34 @@
+<!-- contactanos.html -->
+{% extends 'base.html' %}
+
+{% block title %}Contactanos{% endblock %}
+
+{% block content %}
+
+<div class="contact-form">
+    <h2>Contactanos</h2>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('contactanos') }}">
+        {{ form.hidden_tag() }}
+        <label for="{{ form.nombre.id }}">Nombre:</label>
+        {{ form.nombre() }}
+
+        <label for="{{ form.correo.id }}">Correo electrónico:</label>
+        {{ form.correo() }}
+
+        <label for="{{ form.mensaje.id }}">Mensaje:</label>
+        {{ form.mensaje() }}
+
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+
+{% endblock %}

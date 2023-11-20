@@ -113,3 +113,66 @@ th {
   border-radius: 8px; /* Bordes redondeados para la imagen */
   margin-top: 20px; /* Espaciado superior */
 }
+
+/* Estilos específicos para la página de contacto */
+.contact-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.contact-form h2 {
+  text-align: center;
+  color: #333;
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.contact-form textarea {
+  height: 100px;
+}
+
+.contact-form button {
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.contact-form button:hover {
+  background-color: #218838;
+}
+
+.flash-messages {
+  margin-top: 16px;
+}
+
+.flash-message {
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+}
